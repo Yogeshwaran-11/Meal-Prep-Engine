@@ -103,6 +103,37 @@ python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 
 ---
 
+## Deploying to Render (render.com)
+
+This repository includes a [`render.yaml`](render.yaml) blueprint specification for automated, 1-click cloud deployment.
+
+### Option A: Using Render Blueprints (Recommended)
+1. Push this repository to GitHub: `https://github.com/Yogeshwaran-11/Meal-Prep-Engine`.
+2. Go to **[Render Dashboard](https://dashboard.render.com)**.
+3. Click **New +** -> **Blueprint**.
+4. Connect the `Yogeshwaran-11/Meal-Prep-Engine` repository.
+5. Render will automatically detect `render.yaml` and configure:
+   - **Service Name**: `meal-prep-engine`
+   - **Environment**: `Python 3.12`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+   - **Health Check**: `/api/health`
+6. Click **Apply**. Your app will build, deploy, and be available at `https://meal-prep-engine.onrender.com`.
+
+### Option B: Manual Web Service Setup
+1. In Render Dashboard, click **New +** -> **Web Service**.
+2. Select your repository `Meal-Prep-Engine`.
+3. Configure the following fields:
+   - **Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+   - **Instance Type**: `Free`
+4. Under **Environment Variables**, add:
+   - `PYTHON_VERSION`: `3.12.8`
+5. Click **Create Web Service**.
+
+---
+
 ## Running Automated Tests
 
 To execute the automated Pytest suite verifying all functional and non-functional requirements:
