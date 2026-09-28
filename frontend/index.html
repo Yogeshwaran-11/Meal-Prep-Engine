@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive Recipe & Meal-Prep Engine - Pantry tracking, smart expiry alerts, and pantry-first recipe recommendations.">
+  <title>Meal Prep Engine | Smart Pantry & Recipe Recommendations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Main Application Shell -->
+  <div class="app-shell hidden" id="appShell">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">MealPrep</span>
+          <span class="brand-sub">Engine</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-section="dashboard" type="button" id="navDashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="5" rx="1.5"></rect>
+            <rect x="14" y="12" width="7" height="9" rx="1.5"></rect>
+            <rect x="3" y="16" width="7" height="5" rx="1.5"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-item" data-section="pantry" type="button" id="navPantry">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span>Pantry Items</span>
+        </button>
+
+        <button class="nav-item" data-section="expiry" type="button" id="navExpiry">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Expiry Alerts</span>
+          <span class="nav-badge hidden" id="navExpiryBadge">0</span>
+        </button>
+
+        <button class="nav-item" data-section="recommendations" type="button" id="navRecommendations">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>Recommendations</span>
+        </button>
+
+        <button class="nav-item" data-section="shopping" type="button" id="navShopping">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span>Shopping List</span>
+        </button>
+
+        <button class="nav-item" data-section="cooking" type="button" id="navCooking">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a5 5 0 0 0-5 5v3H4a2 2 0 0 0-2 2v2a8 8 0 0 0 16 0v-2a2 2 0 0 0-2-2h-3V7a5 5 0 0 0-5-5z"></path>
+            <line x1="6" y1="18" x2="18" y2="18"></line>
+          </svg>
+          <span>Cooking Mode</span>
+        </button>
+
+        <button class="nav-item" data-section="reports" type="button" id="navReports">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Reports</span>
+        </button>
+
+        <button class="nav-item admin-only hidden" data-section="admin" type="button" id="navAdmin">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Recipe Admin</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar-small" id="sidebarAvatar">U</div>
+          <div class="user-info">
+            <span class="user-name" id="sidebarName">Home Cook</span>
+            <span class="user-role-badge" id="sidebarRole">User</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Sticky Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenu" type="button" aria-label="Toggle navigation menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="breadcrumb" aria-label="Breadcrumb">
+            <span class="breadcrumb-root">MealPrep</span>
+            <span class="breadcrumb-separator">/</span>
+            <strong class="breadcrumb-current" id="breadcrumb">Dashboard</strong>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="session-pill">
+            <span class="pulse-indicator"></span>
+            <span id="sessionStatusText">Active</span>
+          </div>
+          <div class="user-profile-header">
+            <div class="avatar" id="avatar">U</div>
+            <div class="profile-details">
+              <strong id="profileName">User</strong>
+              <span id="profileRole">Role</span>
+            </div>
+          </div>
+          <button class="btn-ghost-logout" id="logoutBtn" type="button" title="Sign out">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Viewport -->
+      <main class="content-viewport">
+        <!-- 1. DASHBOARD -->
+        <section class="page-section active" id="dashboard">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Overview</span>
+              <h1 class="page-title">Kitchen Dashboard</h1>
+              <p class="page-desc">Live pantry stats, ingredients nearing expiration, and ranked recipe recommendations.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary" type="button" id="dashAddPantryBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Ingredient</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metric Cards -->
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <div class="metric-icon-box bg-green-subtle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              </div>
+              <div class="metric-body">
+                <span class="metric-label">Pantry Items</span>
+                <strong class="metric-value" id="pantryCount">0</strong>
+                <span class="metric-sub">Tracked in inventory</span>
+              </div>
+            </article>
+
+            <article class="metric-card border-warning">
+              <div class="metric-icon-box bg-amber-subtle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              </div>
+              <div class="metric-body">
+                <span class="metric-label">Expiring Soon</span>
+                <strong class="metric-value text-amber" id="expiryCount">0</strong>
+                <span class="metric-sub">Within 5 days or past date</span>
+              </div>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-icon-box bg-teal-subtle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div class="metric-body">
+                <span class="metric-label">Matched Recipes</span>
+                <strong class="metric-value" id="recCount">0</strong>
+                <span class="metric-sub">Ready to cook from pantry</span>
+              </div>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-icon-box bg-coral-subtle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e06b3a" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </div>
+              <div class="metric-body">
+                <span class="metric-label">Favorites</span>
+                <strong class="metric-value" id="favCount">0</strong>
+                <span class="metric-sub">Saved recipes</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- Dual Highlights Section -->
+          <div class="dashboard-split">
+            <!-- Expiry Highlight -->
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Expiry Warnings</h2>
+                  <p class="panel-desc">Ingredients that should be cooked soon to avoid waste.</p>
+                </div>
+                <button class="btn-subtle" type="button" id="dashViewExpiryBtn">View all</button>
+              </div>
+              <div class="item-stack" id="dashboardAlerts"></div>
+            </article>
+
+            <!-- Recommendations Highlight -->
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Pantry-First Suggestions</h2>
+                  <p class="panel-desc">Ranked by available and soon-to-expire ingredients.</p>
+                </div>
+                <button class="btn-subtle" type="button" id="dashViewRecsBtn">Explore</button>
+              </div>
+              <div class="item-stack" id="dashboardRecipes"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 2. PANTRY MANAGEMENT -->
+        <section class="page-section" id="pantry">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Inventory</span>
+              <h1 class="page-title">Pantry Management</h1>
+              <p class="page-desc">Track ingredient names, available quantities, units, and expiration dates.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary" id="addIngredientBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Ingredient</span>
+              </button>
+            </div>
+          </div>
+
+          <article class="panel">
+            <div class="table-toolbar">
+              <div class="search-input-wrap">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="pantrySearch" placeholder="Search pantry by ingredient name..." aria-label="Search pantry">
+              </div>
+              <span class="counter-badge" id="pantryFilterCount">All items</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ingredient</th>
+                    <th>Quantity</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pantryTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 3. EXPIRY ALERTS -->
+        <section class="page-section" id="expiry">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Alerts</span>
+              <h1 class="page-title">Expiry Warnings</h1>
+              <p class="page-desc">Items that require immediate attention (expired or expiring within 5 days).</p>
+            </div>
+          </div>
+          <div class="expiry-cards-grid" id="expiryGrid"></div>
+        </section>
+
+        <!-- 4. RECIPE RECOMMENDATIONS -->
+        <section class="page-section" id="recommendations">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Engine</span>
+              <h1 class="page-title">Recipe Recommendations</h1>
+              <p class="page-desc">Recipes ranked by available pantry items, prioritizing soon-to-expire ingredients.</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Recipe Filters -->
+          <article class="panel filter-panel">
+            <div class="filters-grid">
+              <div class="form-group">
+                <label for="recipeSearch">Search</label>
+                <div class="search-input-wrap">
+                  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="search" id="recipeSearch" placeholder="Filter by dish or ingredient...">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="dietFilter">Dietary Choice</label>
+                <select id="dietFilter" class="select-input">
+                  <option value="all">All Diets</option>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="non-vegetarian">Non-Vegetarian</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="timeFilter">Max Cooking Time</label>
+                <select id="timeFilter" class="select-input">
+                  <option value="">Any Time</option>
+                  <option value="15">Up to 15 mins</option>
+                  <option value="25">Up to 25 mins</option>
+                  <option value="35">Up to 35 mins</option>
+                  <option value="45">Up to 45 mins</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="difficultyFilter">Difficulty Level</label>
+                <select id="difficultyFilter" class="select-input">
+                  <option value="all">All Levels</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+            </div>
+          </article>
+
+          <div class="recipe-cards-grid" id="recipeGrid"></div>
+        </section>
+
+        <!-- 5. MISSING INGREDIENTS & SHOPPING LIST -->
+        <section class="page-section" id="shopping">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Groceries</span>
+              <h1 class="page-title">Missing Ingredients &amp; Shopping List</h1>
+              <p class="page-desc">Check what any recipe is missing, and automatically add needed quantities to your shopping list.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-outline" id="addCustomShopBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Item</span>
+              </button>
+              <button class="btn-danger-outline" id="clearShoppingBtn" type="button">Clear List</button>
+            </div>
+          </div>
+
+          <div class="two-pane-grid">
+            <!-- Left Pane: Missing Ingredients Checker -->
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Recipe Missing Ingredients</h2>
+                  <p class="panel-desc">Select a recipe to compare its ingredient needs against your pantry.</p>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="shoppingRecipe">Select Recipe</label>
+                <select id="shoppingRecipe" class="select-input"></select>
+              </div>
+
+              <div class="missing-items-box">
+                <div class="item-stack" id="missingList"></div>
+              </div>
+
+              <button class="btn-primary full-width" id="generateShoppingBtn" type="button" style="margin-top: 16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>Add Missing to Shopping List</span>
+              </button>
+            </article>
+
+            <!-- Right Pane: Active Shopping List -->
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Shopping List</h2>
+                  <p class="panel-desc">Items to purchase. Mark as purchased or remove when done.</p>
+                </div>
+              </div>
+
+              <div class="item-stack" id="shoppingList"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 6. COOKING MANAGEMENT -->
+        <section class="page-section" id="cooking">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Kitchen</span>
+              <h1 class="page-title">Recipe &amp; Cooking Management</h1>
+              <p class="page-desc">Adjust servings, follow step-by-step instructions, run timers, save favorites, and record cooking history.</p>
+            </div>
+          </div>
+
+          <div class="cooking-grid">
+            <!-- Main Recipe Cooking Panel -->
+            <article class="panel cooking-main-panel" id="cookingDetail">
+              <div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path d="M12 2a5 5 0 0 0-5 5v3H4a2 2 0 0 0-2 2v2a8 8 0 0 0 16 0v-2a2 2 0 0 0-2-2h-3V7a5 5 0 0 0-5-5z"></path></svg>
+                <h3>No Recipe Selected</h3>
+                <p>Choose a recipe from Recommendations to begin cooking with live serving adjustments and timers.</p>
+              </div>
+            </article>
+
+            <!-- Cooking Timer Sidebar -->
+            <aside class="panel timer-widget">
+              <div class="timer-widget-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <h3>Cooking Timer</h3>
+              </div>
+              <p class="timer-widget-sub">Digital countdown timer for boiling, sautéing, baking, or resting.</p>
+
+              <div class="timer-card" id="timerCard">
+                <div class="timer-digits" id="timerDisplay">05:00</div>
+                <div class="timer-status-text" id="timerStatus">Ready</div>
+              </div>
+
+              <div class="timer-action-buttons">
+                <button class="btn-primary" id="startTimer" type="button">Start</button>
+                <button class="btn-outline" id="resetTimer" type="button">Reset</button>
+              </div>
+
+              <div class="timer-presets-row">
+                <span class="presets-label">Quick Presets:</span>
+                <div class="presets-list">
+                  <button type="button" class="btn-preset" data-minutes="3">3m</button>
+                  <button type="button" class="btn-preset" data-minutes="5">5m</button>
+                  <button type="button" class="btn-preset" data-minutes="10">10m</button>
+                  <button type="button" class="btn-preset" data-minutes="15">15m</button>
+                  <button type="button" class="btn-preset" data-minutes="20">20m</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <!-- Bottom Split: Favorites & Cooking History -->
+          <div class="dashboard-split" style="margin-top: 24px;">
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Favorite Recipes</h2>
+                  <p class="panel-desc">Quick access to bookmarked culinary favorites.</p>
+                </div>
+              </div>
+              <div class="item-stack" id="favoritesList"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Cooking History</h2>
+                  <p class="panel-desc">Log of recipes you have prepared with timestamps and servings.</p>
+                </div>
+              </div>
+              <div class="item-stack" id="historyList"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 7. REPORTS -->
+        <section class="page-section" id="reports">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Analytics</span>
+              <h1 class="page-title">Pantry &amp; Cooking Reports</h1>
+              <p class="page-desc">Summary reports on ingredient expiry status and cooking frequency.</p>
+            </div>
+          </div>
+
+          <div class="metrics-grid" id="reportSummary"></div>
+
+          <div class="dashboard-split">
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Expiry Health Breakdown</h2>
+                  <p class="panel-desc">Inventory risk status and items approaching or past expiry.</p>
+                </div>
+              </div>
+              <div class="progress-bar-container" id="reportExpiryBar"></div>
+              <div class="item-stack" id="reportExpiry"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Most Cooked Recipes</h2>
+                  <p class="panel-desc">Frequency rankings based on your cooking activity.</p>
+                </div>
+              </div>
+              <div class="item-stack" id="reportPopular"></div>
+            </article>
+          </div>
+
+          <!-- Admin-Only System Report -->
+          <article class="panel admin-only hidden" id="adminReportPanel" style="margin-top: 24px;">
+            <div class="panel-header">
+              <div>
+                <h2 class="panel-title">System Admin Overview</h2>
+                <p class="panel-desc">System-wide usage statistics and registered accounts.</p>
+              </div>
+            </div>
+            <div class="item-stack" id="adminReport"></div>
+          </article>
+        </section>
+
+        <!-- 8. ADMIN RECIPE MANAGEMENT -->
+        <section class="page-section" id="admin">
+          <div class="page-header">
+            <div>
+              <span class="badge-pill">Admin Only</span>
+              <h1 class="page-title">Recipe Management</h1>
+              <p class="page-desc">Create, update, and manage global recipe templates in the SQLite database.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary" id="addRecipeBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>New Recipe</span>
+              </button>
+            </div>
+          </div>
+
+          <article class="panel">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Recipe Name</th>
+                    <th>Diet</th>
+                    <th>Cook Time</th>
+                    <th>Difficulty</th>
+                    <th>Base Servings</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminRecipeTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modern Dual-Pane Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal-box">
+      <!-- Left Hero Pane -->
+      <section class="login-hero-pane">
+        <div class="login-brand-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+          <span>MealPrep Engine</span>
+        </div>
+
+        <h2 class="login-hero-headline">Cook smarter with what you already have.</h2>
+        <p class="login-hero-sub">Keep track of your pantry items, receive timely expiry alerts, and discover recipes that use expiring ingredients first.</p>
+
+        <ul class="login-features-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Pantry tracking with expiration countdowns</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Pantry-first recipe suggestions to minimize waste</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Missing ingredient shopping list generator</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Step-by-step cooking mode with digital timers</span>
+          </li>
+        </ul>
+
+        <div class="security-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Five failed login attempts lock account for 15 min. Sessions expire after 30 min of inactivity.</span>
+        </div>
+      </section>
+
+      <!-- Right Form Pane -->
+      <section class="login-form-pane">
+        <div class="login-form-header">
+          <h1 class="login-form-title">Welcome back</h1>
+          <p class="login-form-sub">Sign in to your kitchen account</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginUser">Username</label>
+            <input type="text" id="loginUser" required autocomplete="username" placeholder="user or admin" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="loginPass">Password</label>
+            <input type="password" id="loginPass" required autocomplete="current-password" placeholder="••••••••" class="form-input">
+          </div>
+
+          <div class="form-alert hidden" id="loginError" role="alert"></div>
+
+          <button class="btn-primary full-width" type="submit" id="loginSubmitBtn">
+            <span>Sign In</span>
+          </button>
+        </form>
+
+        <!-- Quick-Fill Demo Helpers -->
+        <div class="demo-helpers">
+          <span class="demo-helpers-title">Quick Demo Login:</span>
+          <div class="demo-buttons-row">
+            <button type="button" class="btn-demo-chip" id="demoUserBtn">
+              <strong>User</strong>
+              <small>user / User@123</small>
+            </button>
+            <button type="button" class="btn-demo-chip" id="demoAdminBtn">
+              <strong>Admin</strong>
+              <small>admin / Admin@123</small>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Toast Notification Floating Widget -->
+  <div class="toast-container" id="toastContainer">
+    <div class="toast-item" id="toast" role="status" aria-live="polite">
+      <span class="toast-message" id="toastMsg">Action completed.</span>
+    </div>
+  </div>
+
+  <!-- Main JS Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
