@@ -4,8 +4,8 @@ import os
 port = os.environ.get("PORT", "10000")
 bind = f"0.0.0.0:{port}"
 
-# Free tier resource optimization
-workers = int(os.environ.get("WEB_CONCURRENCY", "2"))
+# Free tier resource optimization: 1 worker keeps memory usage ~80MB, well within 512MB limit
+workers = int(os.environ.get("WEB_CONCURRENCY", "1"))
 worker_class = "uvicorn.workers.UvicornWorker"
 timeout = 120
 keepalive = 5
