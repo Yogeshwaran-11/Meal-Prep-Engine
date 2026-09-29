@@ -5,3 +5,5 @@ pydantic>=2.11.0
 python-multipart>=0.0.20
 httpx>=0.28.0
 pytest>=8.3.0
+gunicorn>=22.0.0
+
